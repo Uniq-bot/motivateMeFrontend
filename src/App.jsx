@@ -39,21 +39,17 @@ const AppRoutes = () => {
     checkUser();
   }, [setUser, setIsLoggedIn]);
 
-  useEffect(() => {
-    if (loading) return; // wait for the profile check
+ const redirect = () => {
+  if (loading) return;
+  if (isLoggedIn && (location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/")) {
+    navigate("/feed", { replace: true });
+  }
+  if (!isLoggedIn && (location.pathname === "/feed" || location.pathname === "/")) {
+    navigate("/login", { replace: true });
+  }
+};
 
-    if (isLoggedIn) {
-      // logged-in users shouldn't go to login/register
-      if (location.pathname === "/login" || location.pathname === "/register") {
-        navigate("/feed", { replace: true });
-      }
-    } else {
-      // not logged-in users shouldn't access feed
-      if (location.pathname === "/feed") {
-        navigate("/login", { replace: true });
-      }
-    }
-  }, [isLoggedIn, location.pathname, navigate, loading]);
+useEffect(redirect, [isLoggedIn, location.pathname, navigate, loading]);
 
   if (loading) return <div className="text-white p-10">Loading...</div>; // optional loading screen
 
