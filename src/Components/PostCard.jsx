@@ -8,7 +8,7 @@ const PostCard = ({ post }) => {
   const [likes, setLikes] = useState(post?.likes?.length || 0);
   const [isLiked, setIsLiked] = useState(
     post?.likes?.some(
-      (l) => (typeof l.user === "string" ? l.user : l.user._id) === user?._id
+      (l) => (typeof l.user === "string" ? l.user : l.user?._id) === user?._id
     ) || false
   );
 
