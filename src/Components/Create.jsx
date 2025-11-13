@@ -4,6 +4,7 @@ import { createPost } from "../utils/api";
 const CreatePost = ({ onClose, onPosted }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [isPosting, setIsPosting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,6 +14,7 @@ const CreatePost = ({ onClose, onPosted }) => {
     const token = localStorage.getItem("motiToken");
 
     try {
+      setIsPosting(true);
       const newPost = await createPost(payload, token);
 
       // Clear inputs
@@ -22,7 +24,9 @@ const CreatePost = ({ onClose, onPosted }) => {
       // Notify parent
       if (onPosted) onPosted(newPost);
     } catch {
-      // Handle error silently or show user message
+      // Optionally show an error to the user (omitted for now)
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -50,9 +54,10 @@ const CreatePost = ({ onClose, onPosted }) => {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition flex-1"
+            disabled={isPosting}
+            className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition flex-1 ${isPosting ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            Post
+            {isPosting ? 'Posting...' : 'Post'}
           </button>
           <button
             type="button"
